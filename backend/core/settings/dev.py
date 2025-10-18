@@ -74,6 +74,11 @@ TEMPLATES = [
     },
 ]
 
+CSRF_TRUSTED_ORIGINS = [
+    'https://backend-dev-811210300089.us-east4.run.app',
+]
+
+
 WSGI_APPLICATION = 'core.wsgi.application'
 
 AUTH_USER_MODEL = 'users.User'
