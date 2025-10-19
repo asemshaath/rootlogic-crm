@@ -2,9 +2,11 @@ from django.db import models
 import datetime
 from django.utils.text import slugify
 from django.contrib.auth.models import AbstractUser
+import uuid
 
 # Create your models here.
 class Organization(models.Model):
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     name = models.CharField(max_length=255)
     slug = models.SlugField(unique=True)
     created_at = models.DateTimeField(auto_now_add=True)
@@ -26,6 +28,7 @@ class Organization(models.Model):
 
 
 class User(AbstractUser):
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     organization = models.ForeignKey(Organization, on_delete=models.CASCADE, null=True, blank=True)
     role = models.CharField(max_length=50, choices=[('admin', 'Admin'), ('member', 'Member')])
     email = models.EmailField(unique=True)
