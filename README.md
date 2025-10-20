@@ -13,7 +13,7 @@ Database: Postgres hosted in a VM
 
 GET `api/customers`
 res: 
-```json
+```js
 {
     "count": 2,
     "data": [
@@ -30,7 +30,7 @@ body: `{new_customer_info**}`
 validation: validate the format of email, and phone_number. 
 
 res: 
-```json
+```js
 {
     "id": "bd165cdf-401d-4e0e-abe2-f9b1b5d01a11",
     "first_name": "Asem",
@@ -47,7 +47,7 @@ res:
 GET 	`api/customers/<uuid>`
 
 res:
-```json
+```js
 	{
         "id": "bd165cdf-401d-4e0e-abe2-f9b1b5d01a11",
         "first_name": "Asem",
@@ -64,14 +64,14 @@ res:
 PATCH	`api/customers/<uuid>`
 
 body: 
-```json
+```js
 {"first_name": "Will", "last_name": "Smith"}
 ```
 
 validation: validate the format of email, and phone_number. 
 
 res: 
-```json
+```js
 	{
         "id": "bd165cdf-401d-4e0e-abe2-f9b1b5d01a11",
         "first_name": "Will",
@@ -90,7 +90,7 @@ res:
 DELETE	`api/customers/<uuid>`
 
 res: 
-```json
+```js
 {
     "status": true,
     "message": "deleted the customer succesfully"
@@ -102,7 +102,7 @@ res:
 GET		`api/customers/<uuid>/addresses/`
 
 res: 
-```json
+```js
 	{
 		"count": 2,
 		"data": [{address1}, {address2}],
@@ -127,7 +127,7 @@ res: `{new_address** full details}`
 GET		`api/customers/<uuid>/addresses/<uuid>`
 
 res:
-```json
+```js
 {
     "address_line1": "20 W 34th St",
     "address_line2": "",
@@ -143,13 +143,13 @@ res:
 PATCH `api/customers/<uuid>/addresses/<uuid>`
 
 body: 
-```json
+```js
 {"address_line1": "21 W 34th St"}
 ```
 validation: Validate if the entry is a valid format
 
 res:
-```json
+```js
 {
     "address_line1": "21 W 34th St",
     "address_line2": "",
@@ -166,7 +166,7 @@ res:
 DELETE `api/customers/<uuid>/addresses/<uuid>`
 
 res: 
-```json
+```js
 {
     "status": true,
     "message": "deleted the address succesfully"
