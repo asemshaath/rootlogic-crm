@@ -19,6 +19,9 @@ RUN pip install --upgrade pip
 # Install dependencies from the requirements.txt file to ensure our Python environment is ready
 RUN pip install -r requirements.txt
 
+# Collect static files (admin CSS/JS etc.)
+RUN python manage.py collectstatic --noinput
+
 # Set the command to run our web service using Gunicorn, binding it to 0.0.0.0 and the PORT environment variable
 CMD gunicorn core.wsgi:application --bind 0.0.0.0:"${PORT}"
 
