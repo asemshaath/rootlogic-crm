@@ -52,8 +52,20 @@ class Address(models.Model):
         verbose_name_plural = 'Addresses'
     
     def save(self, *args, **kwargs):
+        # only one primary address per customer
+        if self.is_primary:
+            Address.objects.filter(customer=self.customer, is_primary=True).update(is_primary=False)
         self.updated_at = models.DateTimeField(auto_now=True)
         super().save(*args, **kwargs)
     
+    def delete(self, *args, **kwargs):
+        # Deleting a primary address: set another address as primary if exists
+        if self.is_primary:
+            other_address = Address.objects.filter(customer=self.customer).exclude(id=self.id).first()
+            if other_address:
+                other_address.is_primary = True
+                other_address.save()
+        super().delete(*args, **kwargs)
+
     def __str__(self) -> str:
-        return f"{self.address_line1}, {self.city}, {self.state}, {self.country}"
+        return f"{self.address_line1}, {self.city}, {self.state} {self.pincode}, {self.country}"
