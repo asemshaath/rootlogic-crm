@@ -16,9 +16,20 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
+from django.http import JsonResponse
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     # path('users/', include('users.urls')),
     path('api/customers/', include('customers.urls')),  
 ]
+
+def json_404_view(request, exception=None):
+    return JsonResponse({'error': True, 'message': 'Not found'}, status=404)
+
+def json_500_view(request):
+    return JsonResponse({'error': True, 'message': 'Internal server error'}, status=500)
+
+handler404 = 'core.urls.json_404_view'
+handler500 = 'core.urls.json_500_view'
+
