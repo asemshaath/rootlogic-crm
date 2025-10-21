@@ -7,6 +7,8 @@ from rest_framework.views import APIView
 from django.db.models import Count, Q
 from rest_framework.response import Response
 from rest_framework import status
+from .paginations import StandardResultsSetPagination
+
 # Create your views here.
 
 class CustomerDetailsAPIView(GenericAPIView):
@@ -24,7 +26,7 @@ class CustomerDetailsAPIView(GenericAPIView):
             **serializer.data,
             "addresses":{ 
                 "count": customer.addresses.count(),
-                "data": address_serializer.data,
+                # "data": address_serializer.data,
                 "primary_address": AddressListPerCustomerSerializer(primary_address).data if primary_address else None
             },
         }, status=status.HTTP_200_OK)
@@ -42,7 +44,7 @@ class CustomerDetailsAPIView(GenericAPIView):
             **serializer.data,
             "addresses":{ 
                 "count": customer.addresses.count(),
-                "data": address_serializer.data,
+                # "data": address_serializer.data,
                 "primary_address": AddressListPerCustomerSerializer(primary_address).data if primary_address else None
             },
         }, status=status.HTTP_200_OK)
@@ -55,7 +57,8 @@ class CustomerDetailsAPIView(GenericAPIView):
 class CustomerListCreateAPIView(GenericAPIView):
     queryset = Customer.objects.all()
     serializer_class = CustomerSerializer
-    
+    pagination_class = StandardResultsSetPagination  
+
     def get_queryset(self):
         queryset = Customer.objects.all()
         
@@ -90,12 +93,13 @@ class CustomerListCreateAPIView(GenericAPIView):
     
     def get(self, request, *args, **kwargs):
         queryset = self.get_queryset()
-        serializer = CustomerListSerializer(queryset, many=True)
+        # serializer = CustomerListSerializer(queryset, many=True)
         
-        return Response({
-            'count': queryset.count(),
-            'data': serializer.data
-        }, status=status.HTTP_200_OK)
+        # Apply pagination
+        page = self.paginate_queryset(queryset)
+        serializer = CustomerListSerializer(page, many=True)
+        return self.get_paginated_response(serializer.data)
+
     
     def post(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
@@ -111,19 +115,21 @@ class CustomerListCreateAPIView(GenericAPIView):
 class AddressesListAPIView(GenericAPIView):
     queryset = Customer.objects.all()
     serializer_class = AddressSerializer
-
+    pagination_class = StandardResultsSetPagination
+    
     def get(self, request, *args, **kwargs):
         customer = self.get_object()
         addresses = customer.addresses.all()
-        serializer = self.get_serializer(addresses, many=True)
-        
-        return Response({
-            'count': addresses.count(),
-            'data': serializer.data,
-            'primary_address': AddressSerializer(customer.addresses.filter(is_primary=True).first()).data if customer.addresses.filter(is_primary=True).exists() else None,
-            'primary_address_string': str(customer.addresses.filter(is_primary=True).first()) if customer.addresses.filter(is_primary=True).exists() else None,
-        }, status=status.HTTP_200_OK)
-    
+        primary_address = customer.addresses.filter(is_primary=True).first()
+
+        # Apply pagination
+        page = self.paginate_queryset(addresses)
+        serializer = self.get_serializer(page, many=True)
+        response = self.get_paginated_response(serializer.data)
+        response.data['primary_address'] = AddressSerializer(primary_address).data if primary_address else None
+        # response.data['primary_address'] = primary_address.pk if primary_address else None
+
+        return response    
     def post(self, request, *args, **kwargs):
         customer = self.get_object()
         serializer = self.get_serializer(data=request.data)
