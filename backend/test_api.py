@@ -162,9 +162,124 @@ def test_email_uniqueness():
     assert response.status_code == 204
     print("Cleaned up created customer")
 
+def test_address_crud():
+    print("\nTesting Address CRUD operations...")
+    
+    # First create a customer to add addresses to
+    customer_uri = f"api/customers/"
+    response = requests.post(f"{BASE_URL}{customer_uri}", json={
+        "first_name": "Address",
+        "last_name": "Test",
+        "email": "address_test@example.com",
+        "phone_number": "1234567890"
+    })
+    assert response.status_code == 201
+    customer_id = response.json()['id']
+    print(f"Created test customer: {customer_id}")
+
+    # Create address
+    address_uri = f"api/customers/{customer_id}/addresses/"
+    response = requests.post(f"{BASE_URL}{address_uri}", json={
+        "address_line1": "123 Test St",
+        "address_line2": "Apt 4B",
+        "city": "Test City",
+        "state": "VA",
+        "pincode": "12345",
+        "is_primary": True
+    })
+    assert response.status_code == 201
+    address_id = response.json()['id']
+    print("Created address")
+
+    # Read address
+    address_uri = f"api/customers/{customer_id}/addresses/{address_id}/"
+    response = requests.get(f"{BASE_URL}{address_uri}")
+    assert response.status_code == 200
+    assert response.json()['address_line1'] == "123 Test St"
+    print("Retrieved address")
+
+    # Update address
+    response = requests.patch(f"{BASE_URL}{address_uri}", json={
+        "address_line1": "456 Updated St"
+    })
+    assert response.status_code == 200
+    assert response.json()['address_line1'] == "456 Updated St"
+    print("Updated address")
+
+    # List addresses
+    list_uri = f"api/customers/{customer_id}/addresses/"
+    response = requests.get(f"{BASE_URL}{list_uri}")
+    assert response.status_code == 200
+    assert len(response.json()['data']) > 0
+    print("Listed addresses")
+
+    # Delete address
+    response = requests.delete(f"{BASE_URL}{address_uri}")
+    assert response.status_code == 204
+    print("Deleted address")
+
+    # Cleanup customer
+    customer_uri = f"api/customers/{customer_id}/"
+    response = requests.delete(f"{BASE_URL}{customer_uri}")
+    assert response.status_code == 204
+    print("Cleaned up test customer")
+    print("All Address CRUD tests passed!")
+
+def test_address_primary_flag():
+    print("\nTesting Address primary flag behavior...")
+    
+    # Create a customer
+    customer_uri = f"api/customers/"
+    response = requests.post(f"{BASE_URL}{customer_uri}", json={
+        "first_name": "Primary",
+        "last_name": "Test",
+        "email": "primary_test@example.com",
+        "phone_number": "9876543210"
+    })
+    assert response.status_code == 201
+    customer_id = response.json()['id']
+    
+    # Create first address (primary)
+    address_uri = f"api/customers/{customer_id}/addresses/"
+    response = requests.post(f"{BASE_URL}{address_uri}", json={
+        "address_line1": "789 Primary St",
+        "city": "Primary City",
+        "state": "WA",
+        "pincode": "54321",
+        "is_primary": True
+    })
+    assert response.status_code == 201
+    assert response.json()['is_primary'] == True
+    first_address_id = response.json()['id']
+    
+    # Create second address (also marked as primary)
+    response = requests.post(f"{BASE_URL}{address_uri}", json={
+        "address_line1": "321 Secondary St",
+        "city": "Secondary City",
+        "state": "WV",
+        "pincode": "98765",
+        "is_primary": True
+    })
+    assert response.status_code == 201
+    second_address_id = response.json()['id']
+    
+    # Verify first address is no longer primary
+    response = requests.get(f"{BASE_URL}api/customers/{customer_id}/addresses/{first_address_id}/")
+    assert response.status_code == 200
+    assert response.json()['is_primary'] == False
+    print("Primary flag correctly updates when new primary address is added")
+    
+    # Cleanup
+    customer_uri = f"api/customers/{customer_id}/"
+    response = requests.delete(f"{BASE_URL}{customer_uri}")
+    assert response.status_code == 204
+    print("Address primary flag tests passed!")
+
 if __name__ == "__main__":
     test_customer_crud()
     test_customer_email_validation()
     test_customer_phone_validation()
     test_customer_phone_uniqueness()
     test_email_uniqueness()
+    test_address_crud()
+    test_address_primary_flag()
