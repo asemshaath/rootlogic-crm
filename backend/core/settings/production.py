@@ -48,6 +48,7 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    'core.middleware.JSONErrorMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'whitenoise.middleware.WhiteNoiseMiddleware', 
@@ -75,9 +76,9 @@ TEMPLATES = [
     },
 ]
 
-CSRF_TRUSTED_ORIGINS = [
-    'https://backend-dev-811210300089.us-east4.run.app',
-]
+# CSRF_TRUSTED_ORIGINS = [
+#     'https://backend-dev-811210300089.us-east4.run.app',
+# ]
 
 
 WSGI_APPLICATION = 'core.wsgi.application'
@@ -99,11 +100,13 @@ DATABASES = {
 }
 
 # REST Framework Configuration
-# No browsable API in production
 REST_FRAMEWORK = {
+    # No browsable API in production
     'DEFAULT_RENDERER_CLASSES': (
         'rest_framework.renderers.JSONRenderer',
-    )
+    ),
+    'EXCEPTION_HANDLER': 'core.exceptions.custom_exception_handler',
+
 }
 
 
