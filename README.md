@@ -1,7 +1,7 @@
 # Rootlogic CRM
 
 ## Tech Stack:
-Frontend: React + MUI
+Frontend: Typescript + React + MUI
 
 Backend: Python + Django + Django REST Framework
 
