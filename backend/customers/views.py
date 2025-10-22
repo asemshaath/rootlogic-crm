@@ -74,15 +74,15 @@ class CustomerListCreateAPIView(GenericAPIView):
         
         city = self.request.query_params.get('city', None)
         if city:
-            queryset = queryset.filter(addresses__city__iexact=city).distinct()
+            queryset = queryset.filter(addresses__city__icontains=city).distinct()
         
         state = self.request.query_params.get('state', None)
         if state:
-            queryset = queryset.filter(addresses__state__iexact=state).distinct()
+            queryset = queryset.filter(addresses__state__icontains=state).distinct()
         
         pincode = self.request.query_params.get('pincode', None)
         if pincode:
-            queryset = queryset.filter(addresses__pincode=pincode).distinct()
+            queryset = queryset.filter(addresses__pincode__icontains=pincode).distinct()
         
         queryset = queryset.prefetch_related('addresses')
 
