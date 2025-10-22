@@ -2,7 +2,8 @@ export type UUID = string
 
 
 export interface Customer {
-    id: UUID
+    id: string
+    // uuid: UUID
     first_name: string
     last_name: string
     email: string

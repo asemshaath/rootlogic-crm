@@ -45,7 +45,7 @@ export default function CustomersPage() {
         if (!toDelete) return
 
         try { 
-            await deleteCustomer(toDelete.uuid); 
+            await deleteCustomer(toDelete.id); 
             notify('Customer deleted', 'success'); 
             setToDelete(null); 
             fetchData()
@@ -62,9 +62,9 @@ export default function CustomersPage() {
         setState(''); 
         setPincode(''); 
         setPaginationModel((prev) => ({ ...prev, page: 0 }));
-        setTimeout(() => {
-            fetchData();
-        }, 0);
+        // setTimeout(() => {
+        //     fetchData();
+        // }, 0);
     }
 
     const fetchData = async ()=>{
@@ -80,10 +80,10 @@ export default function CustomersPage() {
                 pincode: pincode || undefined,
             })
             
-            items.forEach((item, index) => {
-                item.uuid = item.id; // DataGrid needs a `id` field
-                item.id = index + paginationModel.page * paginationModel.pageSize;
-            });
+            // items.forEach((item, index) => {
+            //     item.uuid = item.id; // DataGrid needs a `id` field
+            //     item.id = index + paginationModel.page * paginationModel.pageSize;
+            // });
 
             console.log(items);
             setItems(items)
@@ -121,7 +121,7 @@ export default function CustomersPage() {
         }
     }
 
-    const columns = [
+    const columns: any = [
             { field: 'first_name', headerName: 'First name', width: 150 },
             { field: 'last_name', headerName: 'Last name', width: 150 },
             { field: 'email', headerName: 'Email', width: 200 },
@@ -129,7 +129,7 @@ export default function CustomersPage() {
             { field: 'has_only_primary_address', headerName: 'Primary Address Only', width: 180, type: 'boolean' },
             { field: 'actions', headerName: 'Actions', width: 200, renderCell: (params: any) => (
                 <>
-                    <IconButton onClick={() => navigate(`/customers/${params.row.uuid}`)} aria-label="edit"><EditIcon /></IconButton>
+                    <IconButton onClick={() => navigate(`/customers/${params.row.id}`)} aria-label="edit"><EditIcon /></IconButton>
                     <IconButton color="error" onClick={() => setToDelete(params.row)} aria-label="delete"><DeleteIcon /></IconButton>
                 </>
             ) },
@@ -200,6 +200,7 @@ export default function CustomersPage() {
                     rowCount={count}
                     paginationMode="server"
                     paginationModel={paginationModel}
+                    getRowId={(row) => row.id} // Use the backend UUID directly
                     onPaginationModelChange={setPaginationModel}
                     pageSizeOptions={[5, 10, 25]}
                     loading={loading}
