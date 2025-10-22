@@ -55,6 +55,9 @@ class Address(models.Model):
         # only one primary address per customer
         if self.is_primary:
             Address.objects.filter(customer=self.customer, is_primary=True).update(is_primary=False)
+        else:
+            if not Address.objects.filter(customer=self.customer, is_primary=True).exclude(id=self.id).exists():
+                self.is_primary = True
         self.updated_at = models.DateTimeField(auto_now=True)
         super().save(*args, **kwargs)
     
