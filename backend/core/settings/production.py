@@ -44,10 +44,12 @@ INSTALLED_APPS = [
     'rest_framework',
     'users',
     'customers',
-    'drf_spectacular'
+    'drf_spectacular',
+    "corsheaders",
 ]
 
 MIDDLEWARE = [
+    "corsheaders.middleware.CorsMiddleware",
     'django.middleware.security.SecurityMiddleware',
     'core.middleware.JSONErrorMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -160,3 +162,10 @@ STATIC_ROOT = BASE_DIR / 'staticfiles'
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost:5173",  # Vite dev server
+    "https://rootlogic-crm-811210300089.us-east4.run.app",  # your own domain if frontend is hosted there
+    "https://rootlogic-crm-frontend-811210300089.us-east4.run.app/",  # GCP frontend URL
+]
+CORS_ALLOW_CREDENTIALS = True
