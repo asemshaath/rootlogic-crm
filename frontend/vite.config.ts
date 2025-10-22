@@ -5,12 +5,10 @@ export default defineConfig({
   plugins: [react()],
   server: {
     host: '0.0.0.0',
-    port: parseInt(process.env.PORT ?? '5173', 10),
+    port: 5173,
     allowedHosts: ['*'],
     strictPort: true,
-    hmr: {
-      clientPort: 443, // ensure correct websocket port for HTTPS
-    },
+    hmr: { clientPort: 443 },
   },
   preview: {
     allowedHosts: ['*'],
