@@ -4,4 +4,3 @@ dist
 Dockerfile*
 *.log
 .vscode
-.env
