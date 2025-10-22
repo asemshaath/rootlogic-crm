@@ -165,7 +165,7 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:5173",  # Vite dev server
+    "http://localhost:8000",  # when running dockerized frontend
     "https://rootlogic-crm-811210300089.us-east4.run.app",  # your own domain if frontend is hosted there
     "https://rootlogic-crm-frontend-811210300089.us-east4.run.app/",  # GCP frontend URL
 ]
-CORS_ALLOW_CREDENTIALS = True
