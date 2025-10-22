@@ -1,7 +1,9 @@
 import axios from 'axios'
 // import env from "react-dotenv";
 
-const baseURL = `${import.meta.env.VITE_API_BASE_URL}/api/` 
+const BASE_URL = "https://rootlogic-crm-811210300089.us-east4.run.app";
+
+const baseURL = `${BASE_URL}/api/`;
 export const api = axios.create({
     baseURL,
     headers: { 'Content-Type': 'application/json' }
