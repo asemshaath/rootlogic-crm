@@ -1,35 +1,38 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import { Routes, Route, Navigate, Link, useNavigate } from 'react-router-dom'
+import { AppBar, Toolbar, Typography, Container, Box, IconButton, Tooltip, Snackbar, Alert } from '@mui/material'
+import PeopleIcon from '@mui/icons-material/People'
+import { useAppNotifications } from './hooks/useAppNotifications'
+import CustomersPage from './pages/CustomersPage'
+import CustomerDetailPage from './pages/CustomerDetailPage'
 
-function App() {
-  const [count, setCount] = useState(0)
+
+export default function App() {
+
+  const { snackbar, closeSnackbar } = useAppNotifications()
+  const navigate = useNavigate()
 
   return (
-    <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
+    <Box sx={{ minHeight: '100dvh', display: 'flex', flexDirection: 'column' }}>
+      <AppBar position="sticky">
+        <Toolbar>
+          <Tooltip title="Customers">
+            <IconButton color="inherit" onClick={() => navigate('/customers')}>
+              <PeopleIcon />
+            </IconButton>
+          </Tooltip>
+          <Typography variant="h6" sx={{ ml: 1, flexGrow: 1 }}>RootLogic CRM</Typography>
+        </Toolbar>
+      </AppBar>
+      <Container sx={{ py: 3, flex: 1 }}>
+        <Routes>
+          <Route path="/" element={<Navigate to="/customers" replace />} />
+          <Route path="/customers" element={<CustomersPage />} />
+          <Route path="/customers/:id" element={<CustomerDetailPage />} />
+        </Routes>
+      </Container>
+      <Snackbar open={snackbar.open} autoHideDuration={4000} onClose={closeSnackbar}>
+        <Alert severity={snackbar.severity} onClose={closeSnackbar} variant="filled">{snackbar.message}</Alert>
+      </Snackbar>
+    </Box>
   )
 }
-
-export default App
